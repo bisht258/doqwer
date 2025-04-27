@@ -14,7 +14,7 @@ const urlsToCache = [
   "/joke.html",
   "/pass.html",
   "/logout.html",
-  "/offline.html", // <-- add offline.html to cache!
+  "/offline.html",  // <-- Add offline.html to the cache
   "/images/a.webp",
   "/images/b.webp",
   "/images/c.webp",
@@ -30,39 +30,36 @@ const urlsToCache = [
   "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
 ];
 
-// Install event - cache all assets
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log("Opened cache");
-      return cache.addAll(urlsToCache).catch((error) => {
-        console.error('Failed to cache files during install', error);
-      });
+      return cache.addAll(urlsToCache);
     })
   );
 });
 
-// Fetch event - serve from cache or network, fallback to offline page
 self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
+      // Cache hit - return the response
       if (response) {
-        return response; // Cache hit
+        return response;
       }
+
+      // Network request and fallback to offline.html if network fails
       return fetch(event.request).catch(() => {
-        if (event.request.destination === 'document') {
-          return caches.match('/offline.html'); // <-- fallback to offline.html
-        }
+        // Return the offline page if fetch fails
+        return caches.match("/offline.html");
       });
     })
   );
 });
 
-// Activate event - clean old caches
 self.addEventListener("activate", (event) => {
   const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
-    caches.keys().then((cacheNames) => 
+    caches.keys().then((cacheNames) =>
       Promise.all(
         cacheNames.map((cacheName) => {
           if (!cacheWhitelist.includes(cacheName)) {
