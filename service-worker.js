@@ -25,7 +25,7 @@ const urlsToCache = [
   "/shoes2.css",
   "/joke.html",
   "/joke2.css",
-"/joke3.js",
+  "/joke3.js",
   "/pass.html",
   "/logout.html",
   "/offline.html",  // <-- Add offline.html to the cache
