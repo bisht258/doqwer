@@ -70,3 +70,20 @@ self.addEventListener("activate", (event) => {
     )
   );
 });
+
+self.addEventListener("fetch", (event) => {
+  console.log("Intercepting request for:", event.request.url); // Log the requested URL
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      if (response) {
+        console.log("Returning cached response for:", event.request.url); // Log if response is from cache
+        return response;
+      }
+      return fetch(event.request).catch(() => {
+        console.log("Network failed, returning offline.html");
+        return caches.match("/offline.html"); // Fallback to offline.html
+      });
+    })
+  );
+});
+
