@@ -1,8 +1,19 @@
 const CACHE_NAME = "lpu-shopping-cache-v1";
 const urlsToCache = [
-  "/",
   "/index.html",
   "/style.css",
+  "/login.html",
+  "/index2.html",
+  "/cart.html",
+  "/shoes.html",
+  "/figma1.html",
+  "/figma2.html",
+  "/game.html",
+  "/todo.html",
+  "/movie.html",
+  "/joke.html",
+  "/pass.html",
+  "/logout.html",
   "/images/a.webp",
   "/images/b.webp",
   "/images/c.webp",
@@ -17,6 +28,7 @@ const urlsToCache = [
   "https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js",
   "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
 ];
+
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
