@@ -30,32 +30,38 @@ const urlsToCache = [
   "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
 ];
 
+// Cache the necessary files during the install event
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log("Opened cache");
+      console.log("Opened cache and caching files");
       return cache.addAll(urlsToCache);
     })
   );
 });
 
+// Handle fetch events and return cached assets or fallback to offline.html
 self.addEventListener("fetch", (event) => {
+  console.log("Intercepting request for:", event.request.url); // Log the requested URL
   event.respondWith(
     caches.match(event.request).then((response) => {
-      // Cache hit - return the response
+      // Cache hit - return the cached response
       if (response) {
+        console.log("Returning cached response for:", event.request.url); // Log cache hit
         return response;
       }
 
-      // Network request and fallback to offline.html if network fails
+      // If not in cache, make a network request and return it
       return fetch(event.request).catch(() => {
-        // Return the offline page if fetch fails
+        // If the network request fails, return the offline page
+        console.log("Network failed, returning offline.html");
         return caches.match("/offline.html");
       });
     })
   );
 });
 
+// Clean up old caches during activation
 self.addEventListener("activate", (event) => {
   const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
@@ -63,27 +69,10 @@ self.addEventListener("activate", (event) => {
       Promise.all(
         cacheNames.map((cacheName) => {
           if (!cacheWhitelist.includes(cacheName)) {
-            return caches.delete(cacheName);
+            return caches.delete(cacheName); // Delete old cache versions
           }
         })
       )
     )
   );
 });
-
-self.addEventListener("fetch", (event) => {
-  console.log("Intercepting request for:", event.request.url); // Log the requested URL
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        console.log("Returning cached response for:", event.request.url); // Log if response is from cache
-        return response;
-      }
-      return fetch(event.request).catch(() => {
-        console.log("Network failed, returning offline.html");
-        return caches.match("/offline.html"); // Fallback to offline.html
-      });
-    })
-  );
-});
-
