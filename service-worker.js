@@ -35,7 +35,6 @@ self.addEventListener("install", (event) => {
     addResourcesToCache([
       "/index.html",
       "/login.html",
-      "/index2.html",
       "/cart.html",
       "/checkout.html",
       "/shoes.html",
